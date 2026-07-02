@@ -13,11 +13,11 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
 
-      - name: Instalar Java 17
+      - name: Instalar Java 21
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
 
       - name: Instalar Android SDK
         uses: android-actions/setup-android@v2
@@ -36,15 +36,6 @@ jobs:
 
       - name: Build do projeto Ionic (produção)
         run: ionic build --prod
-
-      - name: Verificar se a pasta android existe
-        run: |
-          if [ -d "android" ]; then
-            echo "✅ Pasta android encontrada!"
-          else
-            echo "❌ Pasta android NÃO encontrada!"
-            exit 1
-          fi
 
       - name: Copiar assets para o Capacitor (Android)
         run: npx cap copy android
