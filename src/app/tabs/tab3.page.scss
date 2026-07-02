@@ -1,0 +1,981 @@
+// ---------- Cabeçalho ----------
+.cabecalho-lumina ion-toolbar {
+  --background: #ffffff;
+  --border-color: transparent;
+  --color: #2B2530;
+}
+
+.titulo-animado {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 4px;
+
+  .icone-titulo {
+    font-size: 20px;
+    color: #C2185B;
+    animation: brilhar 2.4s ease-in-out infinite;
+  }
+
+  .texto-titulo {
+    font-size: 1.15rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #C2185B, #7B2D8E);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+// ---------- Conteúdo base ----------
+.conteudo-resultados {
+  --background: #FBF8FA;
+  position: relative;
+}
+
+.conteudo-interno {
+  position: relative;
+  z-index: 1;
+}
+
+// ---------- Partículas decorativas ----------
+.particulas {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+
+  .particula {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.28;
+    background: radial-gradient(circle, #C2185B 0%, transparent 70%);
+    animation: flutuar-particula 14s ease-in-out infinite;
+  }
+
+  .p1 { width: 65px; height: 65px; top: 5%; left: 5%; animation-duration: 16s; }
+  .p2 { width: 38px; height: 38px; top: 12%; right: 12%; background: radial-gradient(circle, #7B2D8E 0%, transparent 70%); animation-duration: 12s; animation-delay: 2s; }
+  .p3 { width: 85px; height: 85px; top: 42%; left: -5%; animation-duration: 20s; animation-delay: 1s; }
+  .p4 { width: 28px; height: 28px; top: 62%; right: 7%; background: radial-gradient(circle, #7B2D8E 0%, transparent 70%); animation-duration: 10s; animation-delay: 3s; }
+  .p5 { width: 52px; height: 52px; bottom: 15%; left: 12%; animation-duration: 18s; animation-delay: 0.5s; }
+  .p6 { width: 36px; height: 36px; bottom: 28%; right: 18%; background: radial-gradient(circle, #7B2D8E 0%, transparent 70%); animation-duration: 13s; animation-delay: 4s; }
+}
+
+// ---------- Estado vazio ----------
+.vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-top: 18%;
+  animation: surgir 0.5s ease both;
+
+  .icone-grande {
+    font-size: 52px;
+    color: #d9c5de;
+    margin-bottom: 12px;
+  }
+
+  h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #2B2530;
+    margin: 0 0 8px;
+  }
+
+  p {
+    font-size: 0.88rem;
+    color: #a698ad;
+    max-width: 280px;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+// ---------- Badges de ronda ----------
+.seccao-rondas {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  animation: surgir 0.4s ease both;
+}
+
+.badge-ronda {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 8px;
+  border-radius: 18px;
+  border: 2px solid #f0e4ec;
+  background: #ffffff;
+  gap: 4px;
+  transition: border-color 0.2s ease;
+
+  .icone-badge {
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+
+    ion-icon {
+      color: #d4c0d8;
+    }
+  }
+
+  .nome-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #b0a0b6;
+  }
+
+  .resultado-badge {
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: #b0a0b6;
+
+    &.em-curso {
+      color: #C2185B;
+      background: #FCE4EC;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+  }
+
+  &.concluida {
+    border-color: #388E3C;
+    background: #E8F5E9;
+
+    .icone-badge ion-icon { color: #388E3C; }
+    .nome-badge { color: #2E7D32; }
+    .resultado-badge { color: #388E3C; }
+  }
+
+  &.atual {
+    border-color: #C2185B;
+    box-shadow: 0 0 0 4px rgba(194, 24, 91, 0.08);
+
+    .icone-badge ion-icon { color: #C2185B; }
+    .nome-badge { color: #C2185B; }
+  }
+
+  &.bloqueada {
+    opacity: 0.5;
+  }
+}
+
+// ---------- Resumo geral ----------
+.resumo {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.resumo-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 14px 6px;
+  box-shadow: 0 4px 14px rgba(123, 45, 142, 0.08);
+  opacity: 0;
+  animation: surgir 0.4s ease both;
+  animation-delay: calc(var(--ordem, 0) * 0.07s);
+
+  ion-icon {
+    font-size: 16px;
+    color: #C2185B;
+    margin-bottom: 2px;
+  }
+
+  .numero {
+    font-size: 1.2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #C2185B, #7B2D8E);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    line-height: 1;
+  }
+
+  .rotulo {
+    font-size: 0.65rem;
+    color: #a698ad;
+    text-align: center;
+    font-weight: 600;
+  }
+}
+
+// ---------- Título de secção ----------
+.titulo-seccao {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #2B2530;
+  margin: 22px 0 12px;
+
+  ion-icon {
+    font-size: 16px;
+    color: #C2185B;
+  }
+
+  .contador-filtro {
+    font-size: 0.78rem;
+    color: #a698ad;
+    font-weight: 600;
+  }
+}
+
+// ---------- Gráfico SVG ----------
+.cartao-grafico {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 4px 14px rgba(123, 45, 142, 0.07);
+  margin-bottom: 20px;
+  animation: surgir 0.45s ease both;
+
+  .titulo-seccao {
+    margin: 0 0 12px;
+  }
+}
+
+.area-grafico {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.svg-grafico {
+  flex: 1;
+  height: 120px;
+  overflow: visible;
+}
+
+.eixo-y {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 4px 0;
+
+  span {
+    font-size: 0.62rem;
+    color: #c0aec8;
+    font-weight: 600;
+    text-align: right;
+    white-space: nowrap;
+  }
+}
+
+// ---------- Campo de busca ----------
+.campo-busca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 4px 14px;
+  box-shadow: 0 4px 12px rgba(123, 45, 142, 0.07);
+  margin-bottom: 20px;
+  animation: surgir 0.4s ease both;
+
+  ion-icon:first-child {
+    font-size: 18px;
+    color: #b0a0b6;
+    flex-shrink: 0;
+  }
+
+  .entrada-busca {
+    flex: 1;
+    --background: transparent;
+    --color: #2B2530;
+    --placeholder-color: #c0aec8;
+    font-size: 0.88rem;
+  }
+
+  .limpar-busca {
+    display: flex;
+    align-items: center;
+
+    ion-icon {
+      font-size: 18px;
+      color: #c0aec8;
+    }
+  }
+}
+
+.sem-resultados {
+  font-size: 0.85rem;
+  color: #b0a0b6;
+  text-align: center;
+  padding: 20px 0;
+  margin: 0;
+}
+
+// ---------- Progresso por tema ----------
+.lista-progresso {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.item-progresso {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 12px 14px;
+  box-shadow: 0 4px 12px rgba(123, 45, 142, 0.06);
+  opacity: 0;
+  animation: surgir 0.4s ease both;
+  animation-delay: calc(var(--ordem, 0) * 0.05s);
+
+  .cabecalho-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 7px;
+
+    .nome-tema {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #2B2530;
+    }
+
+    .percentagem {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #5a4d60;
+    }
+  }
+
+  .barra-fundo {
+    height: 7px;
+    border-radius: 4px;
+    background: #f3ebf2;
+    overflow: hidden;
+  }
+
+  .barra-preenchida {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.6s ease;
+  }
+
+  .tentativas {
+    display: block;
+    font-size: 0.7rem;
+    color: #c0aec8;
+    margin-top: 5px;
+  }
+}
+
+// ---------- Histórico ----------
+.cartao-historico {
+  margin: 0 0 10px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(123, 45, 142, 0.06);
+  opacity: 0;
+  animation: surgir 0.35s ease both;
+  animation-delay: calc(var(--ordem, 0) * 0.04s);
+
+  ion-card-content {
+    padding: 12px 14px;
+  }
+
+  .linha-historico {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .info-historico {
+    flex: 1;
+    min-width: 0;
+
+    strong {
+      font-size: 0.9rem;
+      color: #2B2530;
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .detalhe-historico {
+      font-size: 0.7rem;
+      color: #a698ad;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .streak-historico {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #F57C00;
+      margin-top: 4px;
+
+      ion-icon {
+        font-size: 12px;
+      }
+    }
+  }
+
+  .badge-percentagem {
+    flex-shrink: 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #9a8aa0;
+    background: #f3ebf2;
+    padding: 5px 12px;
+    border-radius: 999px;
+
+    &.passou {
+      color: #2E7D32;
+      background: #E8F5E9;
+    }
+  }
+}
+
+.botao-limpar {
+  margin-top: 14px;
+  font-size: 0.85rem;
+  --border-radius: 12px;
+}
+
+// ---------- Animações ----------
+@keyframes surgir {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes brilhar {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.75; transform: scale(1.1); }
+}
+
+@keyframes flutuar-particula {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(8px, -14px); }
+  50% { transform: translate(-6px, -22px); }
+  75% { transform: translate(-10px, -8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vazio,
+  .seccao-rondas,
+  .resumo-item,
+  .cartao-grafico,
+  .campo-busca,
+  .item-progresso,
+  .cartao-historico,
+  .particula,
+  .icone-titulo {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}// ---------- Cabeçalho ----------
+.cabecalho-lumina ion-toolbar {
+  --background: #ffffff;
+  --border-color: transparent;
+  --color: #2B2530;
+}
+
+.titulo-animado {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 4px;
+
+  .icone-titulo {
+    font-size: 20px;
+    color: #C2185B;
+    animation: brilhar 2.4s ease-in-out infinite;
+  }
+
+  .texto-titulo {
+    font-size: 1.15rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #C2185B, #7B2D8E);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+// ---------- Conteúdo base ----------
+.conteudo-resultados {
+  --background: #FBF8FA;
+  position: relative;
+}
+
+.conteudo-interno {
+  position: relative;
+  z-index: 1;
+}
+
+// ---------- Partículas decorativas ----------
+.particulas {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+
+  .particula {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.28;
+    background: radial-gradient(circle, #C2185B 0%, transparent 70%);
+    animation: flutuar-particula 14s ease-in-out infinite;
+  }
+
+  .p1 { width: 65px; height: 65px; top: 5%; left: 5%; animation-duration: 16s; }
+  .p2 { width: 38px; height: 38px; top: 12%; right: 12%; background: radial-gradient(circle, #7B2D8E 0%, transparent 70%); animation-duration: 12s; animation-delay: 2s; }
+  .p3 { width: 85px; height: 85px; top: 42%; left: -5%; animation-duration: 20s; animation-delay: 1s; }
+  .p4 { width: 28px; height: 28px; top: 62%; right: 7%; background: radial-gradient(circle, #7B2D8E 0%, transparent 70%); animation-duration: 10s; animation-delay: 3s; }
+  .p5 { width: 52px; height: 52px; bottom: 15%; left: 12%; animation-duration: 18s; animation-delay: 0.5s; }
+  .p6 { width: 36px; height: 36px; bottom: 28%; right: 18%; background: radial-gradient(circle, #7B2D8E 0%, transparent 70%); animation-duration: 13s; animation-delay: 4s; }
+}
+
+// ---------- Estado vazio ----------
+.vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-top: 18%;
+  animation: surgir 0.5s ease both;
+
+  .icone-grande {
+    font-size: 52px;
+    color: #d9c5de;
+    margin-bottom: 12px;
+  }
+
+  h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #2B2530;
+    margin: 0 0 8px;
+  }
+
+  p {
+    font-size: 0.88rem;
+    color: #a698ad;
+    max-width: 280px;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+// ---------- Badges de ronda ----------
+.seccao-rondas {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  animation: surgir 0.4s ease both;
+}
+
+.badge-ronda {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 8px;
+  border-radius: 18px;
+  border: 2px solid #f0e4ec;
+  background: #ffffff;
+  gap: 4px;
+  transition: border-color 0.2s ease;
+
+  .icone-badge {
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+
+    ion-icon {
+      color: #d4c0d8;
+    }
+  }
+
+  .nome-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #b0a0b6;
+  }
+
+  .resultado-badge {
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: #b0a0b6;
+
+    &.em-curso {
+      color: #C2185B;
+      background: #FCE4EC;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+  }
+
+  &.concluida {
+    border-color: #388E3C;
+    background: #E8F5E9;
+
+    .icone-badge ion-icon { color: #388E3C; }
+    .nome-badge { color: #2E7D32; }
+    .resultado-badge { color: #388E3C; }
+  }
+
+  &.atual {
+    border-color: #C2185B;
+    box-shadow: 0 0 0 4px rgba(194, 24, 91, 0.08);
+
+    .icone-badge ion-icon { color: #C2185B; }
+    .nome-badge { color: #C2185B; }
+  }
+
+  &.bloqueada {
+    opacity: 0.5;
+  }
+}
+
+// ---------- Resumo geral ----------
+.resumo {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.resumo-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 14px 6px;
+  box-shadow: 0 4px 14px rgba(123, 45, 142, 0.08);
+  opacity: 0;
+  animation: surgir 0.4s ease both;
+  animation-delay: calc(var(--ordem, 0) * 0.07s);
+
+  ion-icon {
+    font-size: 16px;
+    color: #C2185B;
+    margin-bottom: 2px;
+  }
+
+  .numero {
+    font-size: 1.2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #C2185B, #7B2D8E);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    line-height: 1;
+  }
+
+  .rotulo {
+    font-size: 0.65rem;
+    color: #a698ad;
+    text-align: center;
+    font-weight: 600;
+  }
+}
+
+// ---------- Título de secção ----------
+.titulo-seccao {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #2B2530;
+  margin: 22px 0 12px;
+
+  ion-icon {
+    font-size: 16px;
+    color: #C2185B;
+  }
+
+  .contador-filtro {
+    font-size: 0.78rem;
+    color: #a698ad;
+    font-weight: 600;
+  }
+}
+
+// ---------- Gráfico SVG ----------
+.cartao-grafico {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 4px 14px rgba(123, 45, 142, 0.07);
+  margin-bottom: 20px;
+  animation: surgir 0.45s ease both;
+
+  .titulo-seccao {
+    margin: 0 0 12px;
+  }
+}
+
+.area-grafico {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.svg-grafico {
+  flex: 1;
+  height: 120px;
+  overflow: visible;
+}
+
+.eixo-y {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 4px 0;
+
+  span {
+    font-size: 0.62rem;
+    color: #c0aec8;
+    font-weight: 600;
+    text-align: right;
+    white-space: nowrap;
+  }
+}
+
+// ---------- Campo de busca ----------
+.campo-busca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 4px 14px;
+  box-shadow: 0 4px 12px rgba(123, 45, 142, 0.07);
+  margin-bottom: 20px;
+  animation: surgir 0.4s ease both;
+
+  ion-icon:first-child {
+    font-size: 18px;
+    color: #b0a0b6;
+    flex-shrink: 0;
+  }
+
+  .entrada-busca {
+    flex: 1;
+    --background: transparent;
+    --color: #2B2530;
+    --placeholder-color: #c0aec8;
+    font-size: 0.88rem;
+  }
+
+  .limpar-busca {
+    display: flex;
+    align-items: center;
+
+    ion-icon {
+      font-size: 18px;
+      color: #c0aec8;
+    }
+  }
+}
+
+.sem-resultados {
+  font-size: 0.85rem;
+  color: #b0a0b6;
+  text-align: center;
+  padding: 20px 0;
+  margin: 0;
+}
+
+// ---------- Progresso por tema ----------
+.lista-progresso {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.item-progresso {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 12px 14px;
+  box-shadow: 0 4px 12px rgba(123, 45, 142, 0.06);
+  opacity: 0;
+  animation: surgir 0.4s ease both;
+  animation-delay: calc(var(--ordem, 0) * 0.05s);
+
+  .cabecalho-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 7px;
+
+    .nome-tema {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #2B2530;
+    }
+
+    .percentagem {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #5a4d60;
+    }
+  }
+
+  .barra-fundo {
+    height: 7px;
+    border-radius: 4px;
+    background: #f3ebf2;
+    overflow: hidden;
+  }
+
+  .barra-preenchida {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.6s ease;
+  }
+
+  .tentativas {
+    display: block;
+    font-size: 0.7rem;
+    color: #c0aec8;
+    margin-top: 5px;
+  }
+}
+
+// ---------- Histórico ----------
+.cartao-historico {
+  margin: 0 0 10px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(123, 45, 142, 0.06);
+  opacity: 0;
+  animation: surgir 0.35s ease both;
+  animation-delay: calc(var(--ordem, 0) * 0.04s);
+
+  ion-card-content {
+    padding: 12px 14px;
+  }
+
+  .linha-historico {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .info-historico {
+    flex: 1;
+    min-width: 0;
+
+    strong {
+      font-size: 0.9rem;
+      color: #2B2530;
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .detalhe-historico {
+      font-size: 0.7rem;
+      color: #a698ad;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .streak-historico {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #F57C00;
+      margin-top: 4px;
+
+      ion-icon {
+        font-size: 12px;
+      }
+    }
+  }
+
+  .badge-percentagem {
+    flex-shrink: 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #9a8aa0;
+    background: #f3ebf2;
+    padding: 5px 12px;
+    border-radius: 999px;
+
+    &.passou {
+      color: #2E7D32;
+      background: #E8F5E9;
+    }
+  }
+}
+
+.botao-limpar {
+  margin-top: 14px;
+  font-size: 0.85rem;
+  --border-radius: 12px;
+}
+
+// ---------- Animações ----------
+@keyframes surgir {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes brilhar {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.75; transform: scale(1.1); }
+}
+
+@keyframes flutuar-particula {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(8px, -14px); }
+  50% { transform: translate(-6px, -22px); }
+  75% { transform: translate(-10px, -8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vazio,
+  .seccao-rondas,
+  .resumo-item,
+  .cartao-grafico,
+  .campo-busca,
+  .item-progresso,
+  .cartao-historico,
+  .particula,
+  .icone-titulo {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}

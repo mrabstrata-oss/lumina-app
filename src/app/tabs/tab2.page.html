@@ -1,0 +1,250 @@
+<ion-header [translucent]="true" class="cabecalho-lumina">
+  <ion-toolbar>
+    <div class="titulo-animado" slot="start">
+      <ion-icon name="sparkles-outline" class="icone-titulo"></ion-icon>
+      <span class="texto-titulo">Quiz</span>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding conteudo-quiz">
+
+  <!-- Partículas decorativas de fundo, sutis e não-interativas -->
+  <div class="particulas" aria-hidden="true">
+    <span class="particula p1"></span>
+    <span class="particula p2"></span>
+    <span class="particula p3"></span>
+    <span class="particula p4"></span>
+    <span class="particula p5"></span>
+    <span class="particula p6"></span>
+  </div>
+
+  <!-- ===================== ESTADO: IDENTIFICAÇÃO ===================== -->
+  <div class="ecra-identificacao" *ngIf="estado === 'identificacao'">
+    <div class="icone-flutuante">
+      <ion-icon name="person-outline" class="icone-grande"></ion-icon>
+    </div>
+    <h1>Antes de começar...</h1>
+    <p>Diz-nos quem és, para personalizarmos a tua experiência e guardarmos o teu resultado.</p>
+
+    <div class="campo">
+      <label>O teu nome</label>
+      <ion-input
+        type="text"
+        placeholder="Ex: Maria"
+        [(ngModel)]="nomeJogadora"
+        class="entrada"
+        maxlength="30"
+      ></ion-input>
+    </div>
+
+    <div class="campo">
+      <label>A tua idade</label>
+      <ion-input
+        type="number"
+        placeholder="Ex: 22"
+        [(ngModel)]="idadeJogadora"
+        class="entrada"
+        min="8"
+        max="100"
+      ></ion-input>
+    </div>
+
+    <p class="erro" *ngIf="erroIdentificacao">{{ erroIdentificacao }}</p>
+
+    <ion-button expand="block" (click)="confirmarIdentificacao()" class="botao-principal">
+      Continuar
+      <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+    </ion-button>
+  </div>
+
+  <!-- ===================== ESTADO: PRONTA PARA A RONDA ATUAL (sem escolha) ===================== -->
+  <div class="ecra-rondas" *ngIf="estado === 'escolha-ronda'">
+    <div class="saudacao">
+      <h1>Olá, {{ nomeJogadora }} 👋</h1>
+      <p *ngIf="!jogoCompleto">A tua próxima etapa é a Ronda {{ rondaAtual }} de 3.</p>
+      <p *ngIf="jogoCompleto">Já completaste as 3 rondas! Podes repetir a Ronda 3 para melhorar a pontuação.</p>
+    </div>
+
+    <div class="cartao-ronda-atual">
+      <div class="numero-ronda-grande">Ronda {{ rondaAtual }}</div>
+      <div class="barra-rondas">
+        <span
+          class="ponto-ronda"
+          *ngFor="let r of [1, 2, 3]"
+          [class.concluida]="r < rondaAtual || (r === rondaAtual && jogoCompleto)"
+          [class.atual]="r === rondaAtual && !jogoCompleto"
+        ></span>
+      </div>
+      <p class="descricao-ronda">10 perguntas · precisas de {{ 60 }}% para avançar</p>
+    </div>
+
+    <p class="aviso-vidas">
+      <ion-icon name="heart"></ion-icon>
+      Tens 3 vidas — cada erro custa um coração.
+    </p>
+
+    <ion-button expand="block" (click)="iniciarRondaAtual()" class="botao-principal">
+      <ion-icon name="play-outline" slot="start"></ion-icon>
+      Começar Ronda {{ rondaAtual }}
+    </ion-button>
+  </div>
+
+  <!-- ===================== ESTADO: A DECORRER ===================== -->
+  <div class="ecra-quiz" *ngIf="estado === 'a-decorrer' && perguntaAtual">
+
+    <ion-progress-bar [value]="progresso"></ion-progress-bar>
+
+    <!-- Barra de status: vidas + pontos -->
+    <div class="barra-status">
+      <div class="vidas">
+        <ion-icon
+          *ngFor="let v of [0, 1, 2]"
+          [name]="v < vidas ? 'heart' : 'heart-outline'"
+          [class.perdendo]="v === coracaoPerdidoIndice && v >= vidas"
+        ></ion-icon>
+      </div>
+      <div class="pontos" [class.animando]="pontosAnimando">
+        <ion-icon name="star-outline"></ion-icon>
+        {{ pontos }} pts
+      </div>
+    </div>
+
+    <div class="cabecalho-pergunta">
+      <span class="contador">Ronda {{ rondaAtual }} · Pergunta {{ indiceAtual + 1 }}/{{ perguntas.length }}</span>
+
+      <span class="streak" *ngIf="streakAtual > 1">
+        <ion-icon name="flame-outline"></ion-icon>
+        {{ streakAtual }}
+      </span>
+
+      <span class="etiqueta-tema">{{ nomeTema(perguntaAtual.temaId) }}</span>
+    </div>
+
+    <!-- Cronómetro -->
+    <div class="cronometro {{ corCronometro }}">
+      <ion-icon name="time-outline"></ion-icon>
+      <span>{{ segundosRestantes }}s</span>
+    </div>
+
+    <h2 class="texto-pergunta" [attr.data-key]="indiceAtual">{{ perguntaAtual.pergunta }}</h2>
+
+    <div class="opcoes" [attr.data-key]="indiceAtual">
+      <button
+        class="opcao {{ classeOpcao(i) }}"
+        *ngFor="let opcao of perguntaAtual.opcoes; let i = index"
+        (click)="selecionarOpcao(i)"
+        [disabled]="respondeu"
+        [style.--ordem]="i"
+      >
+        <span class="alinea">{{ ['A', 'B', 'C', 'D'][i] }}</span>
+        <span class="texto-opcao">{{ opcao }}</span>
+        <ion-icon *ngIf="classeOpcao(i) === 'correta'" name="checkmark-circle"></ion-icon>
+        <ion-icon *ngIf="classeOpcao(i) === 'errada'" name="close-circle"></ion-icon>
+      </button>
+    </div>
+
+    <p class="aviso-tempo" *ngIf="tempoEsgotado">
+      <ion-icon name="time-outline"></ion-icon>
+      O tempo esgotou-se. A ronda vai recomeçar...
+    </p>
+
+    <ion-card class="cartao-explicacao" *ngIf="respondeu && !tempoEsgotado">
+      <ion-card-content>
+        <strong>Explicação</strong>
+        <p>{{ perguntaAtual.explicacao }}</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-button
+      expand="block"
+      *ngIf="respondeu && !tempoEsgotado && vidas > 0"
+      (click)="irParaCuriosidade()"
+      class="botao-principal"
+    >
+      Continuar
+      <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+    </ion-button>
+
+  </div>
+
+  <!-- ===================== ESTADO: CURIOSIDADE ===================== -->
+  <div class="ecra-curiosidade" *ngIf="estado === 'curiosidade' && perguntaAtual">
+    <div class="icone-flutuante">
+      <ion-icon name="bulb-outline" class="icone-grande"></ion-icon>
+    </div>
+    <span class="rotulo-curiosidade">Sabias que...</span>
+    <p class="texto-curiosidade">{{ perguntaAtual.curiosidade }}</p>
+
+    <ion-button expand="block" (click)="continuarDepoisDaCuriosidade()" class="botao-principal">
+      {{ indiceAtual < perguntas.length - 1 ? 'Próxima pergunta' : 'Ver resultado final' }}
+      <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+    </ion-button>
+  </div>
+
+  <!-- ===================== ESTADO: JOGO PERDIDO (3 erros) ===================== -->
+  <div class="ecra-perdido" *ngIf="estado === 'jogo-perdido'">
+    <div class="icone-flutuante">
+      <ion-icon name="sad-outline" class="icone-grande triste"></ion-icon>
+    </div>
+    <h1>As vidas acabaram</h1>
+    <p class="nome-resultado">{{ nomeJogadora }}</p>
+    <p class="mensagem">
+      Perdeste as 3 vidas nesta tentativa da Ronda {{ rondaAtual }}.
+      Não te preocupes — o teu progresso de rondas já desbloqueadas continua guardado.
+      Vamos tentar outra vez?
+    </p>
+
+    <ion-button expand="block" (click)="iniciarRondaAtual()" class="botao-principal">
+      <ion-icon name="refresh-outline" slot="start"></ion-icon>
+      Tentar de novo
+    </ion-button>
+  </div>
+
+  <!-- ===================== ESTADO: FIM ===================== -->
+  <div class="ecra-fim" *ngIf="estado === 'fim'">
+    <div class="icone-flutuante">
+      <ion-icon name="trophy-outline" class="icone-grande" [class.bloqueado]="!passouNestaTentativa"></ion-icon>
+    </div>
+
+    <p class="nome-resultado">{{ nomeJogadora }}, {{ idadeJogadora }} anos</p>
+
+    <h1>{{ percentagemFinal }}%</h1>
+    <p class="pontuacao-detalhe">{{ acertos }} de {{ perguntas.length }} respostas certas</p>
+    <p class="pontos-finais">
+      <ion-icon name="star-outline"></ion-icon>
+      {{ pontos }} pontos nesta tentativa
+    </p>
+
+    <div class="resultado-ronda" [class.sucesso]="passouNestaTentativa" [class.falhou]="!passouNestaTentativa">
+      <ion-icon [name]="passouNestaTentativa ? 'checkmark-circle' : 'lock-closed-outline'"></ion-icon>
+      <span *ngIf="passouNestaTentativa && !jogoCompleto">Ronda desbloqueada: Ronda {{ rondaAtual }}</span>
+      <span *ngIf="passouNestaTentativa && jogoCompleto">Jogo completo!</span>
+      <span *ngIf="!passouNestaTentativa">Precisas de 60% para avançar</span>
+    </div>
+
+    <div class="melhor-streak" *ngIf="melhorStreak > 1">
+      <ion-icon name="flame-outline"></ion-icon>
+      Melhor sequência: {{ melhorStreak }}
+    </div>
+
+    <p class="mensagem">{{ mensagemFinal }}</p>
+
+    <ion-button expand="block" (click)="continuar()" class="botao-principal">
+      <ion-icon
+        [name]="jogoCompleto && passouNestaTentativa ? 'home-outline' : (passouNestaTentativa ? 'arrow-forward-outline' : 'refresh-outline')"
+        slot="start"
+      ></ion-icon>
+      {{
+        jogoCompleto && passouNestaTentativa
+          ? 'Voltar ao início'
+          : (passouNestaTentativa ? 'Avançar para a Ronda ' + rondaAtual : 'Repetir esta ronda')
+      }}
+    </ion-button>
+    <ion-button expand="block" fill="clear" (click)="voltarAoInicio()" class="botao-texto">
+      <ion-icon name="home-outline" slot="start"></ion-icon>
+      Voltar ao início
+    </ion-button>
+  </div>
+
+</ion-content>

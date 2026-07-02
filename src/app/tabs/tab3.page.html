@@ -1,0 +1,238 @@
+<ion-header [translucent]="true" class="cabecalho-lumina">
+  <ion-toolbar>
+    <div class="titulo-animado" slot="start">
+      <ion-icon name="ribbon-outline" class="icone-titulo"></ion-icon>
+      <span class="texto-titulo">Resultados</span>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="conteudo-resultados">
+
+  <!-- Partículas decorativas de fundo -->
+  <div class="particulas" aria-hidden="true">
+    <span class="particula p1"></span>
+    <span class="particula p2"></span>
+    <span class="particula p3"></span>
+    <span class="particula p4"></span>
+    <span class="particula p5"></span>
+    <span class="particula p6"></span>
+  </div>
+
+  <div class="ion-padding conteudo-interno">
+
+    <!-- Sem dados ainda -->
+    <div class="vazio" *ngIf="historico.length === 0">
+      <ion-icon name="stats-chart-outline" class="icone-grande"></ion-icon>
+      <h2>Ainda sem resultados</h2>
+      <p>Os teus resultados vão aparecer aqui depois de completares um quiz na aba "Quiz".</p>
+    </div>
+
+    <ng-container *ngIf="historico.length > 0">
+
+      <!-- Estado das rondas (badges) -->
+      <div class="seccao-rondas">
+        <div
+          class="badge-ronda"
+          *ngFor="let r of [1, 2, 3]"
+          [class.concluida]="rondaConcluida(r)"
+          [class.atual]="rondaAtual === r && !rondaConcluida(r)"
+          [class.bloqueada]="rondaAtual < r"
+        >
+          <div class="icone-badge">
+            <ion-icon [name]="rondaConcluida(r) ? 'checkmark-circle' : (rondaAtual < r ? 'lock-closed-outline' : 'trophy-outline')"></ion-icon>
+          </div>
+          <span class="nome-badge">Ronda {{ r }}</span>
+          <span class="resultado-badge" *ngIf="melhorResultadoDaRonda(r) !== null">
+            {{ melhorResultadoDaRonda(r) }}%
+          </span>
+          <span class="resultado-badge em-curso" *ngIf="rondaAtual === r && !rondaConcluida(r)">
+            Em curso
+          </span>
+        </div>
+      </div>
+
+      <!-- Resumo geral -->
+      <div class="resumo">
+        <div class="resumo-item" style="--ordem: 0">
+          <ion-icon name="stats-chart-outline"></ion-icon>
+          <span class="numero">{{ historico.length }}</span>
+          <span class="rotulo">Tentativas</span>
+        </div>
+        <div class="resumo-item" style="--ordem: 1">
+          <ion-icon name="trophy-outline"></ion-icon>
+          <span class="numero">{{ melhorPercentagem }}%</span>
+          <span class="rotulo">Melhor</span>
+        </div>
+        <div class="resumo-item" style="--ordem: 2">
+          <ion-icon name="trending-up-outline"></ion-icon>
+          <span class="numero">{{ mediaPercentagem }}%</span>
+          <span class="rotulo">Média</span>
+        </div>
+        <div class="resumo-item" style="--ordem: 3" *ngIf="melhorStreakHistorico > 0">
+          <ion-icon name="flame-outline"></ion-icon>
+          <span class="numero">{{ melhorStreakHistorico }}</span>
+          <span class="rotulo">Streak</span>
+        </div>
+      </div>
+
+      <!-- Gráfico de evolução -->
+      <div class="cartao-grafico" *ngIf="pontosGrafico.length >= 2">
+        <h3 class="titulo-seccao">
+          <ion-icon name="trending-up-outline"></ion-icon>
+          Evolução
+        </h3>
+        <div class="area-grafico">
+          <svg
+            [attr.viewBox]="'0 0 ' + GRAFICO_LARGURA + ' ' + GRAFICO_ALTURA"
+            class="svg-grafico"
+            preserveAspectRatio="none"
+          >
+            <defs>
+              <linearGradient id="gradiente-area" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#C2185B" stop-opacity="0.25" />
+                <stop offset="100%" stop-color="#C2185B" stop-opacity="0.02" />
+              </linearGradient>
+            </defs>
+
+            <!-- Linhas de referência horizontais -->
+            <line
+              *ngFor="let y of [20, 50, 80]"
+              x1="20" [attr.y1]="GRAFICO_ALTURA - MARGEM - (y / 100) * (GRAFICO_ALTURA - MARGEM * 2)"
+              [attr.x2]="GRAFICO_LARGURA - MARGEM" [attr.y2]="GRAFICO_ALTURA - MARGEM - (y / 100) * (GRAFICO_ALTURA - MARGEM * 2)"
+              stroke="#f0e4ec" stroke-width="1"
+            />
+
+            <!-- Área sob a linha -->
+            <path [attr.d]="caminhoAreaSVG" fill="url(#gradiente-area)" />
+
+            <!-- Linha principal -->
+            <path
+              [attr.d]="caminhoSVG"
+              fill="none"
+              stroke="url(#grad-linha)"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+
+            <defs>
+              <linearGradient id="grad-linha" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#C2185B" />
+                <stop offset="100%" stop-color="#7B2D8E" />
+              </linearGradient>
+            </defs>
+
+            <!-- Pontos -->
+            <g *ngFor="let ponto of pontosGrafico">
+              <circle [attr.cx]="ponto.x" [attr.cy]="ponto.y" r="4" fill="#C2185B" />
+              <circle [attr.cx]="ponto.x" [attr.cy]="ponto.y" r="7" fill="#C2185B" opacity="0.15" />
+            </g>
+          </svg>
+
+          <!-- Valores de referência -->
+          <div class="eixo-y">
+            <span>100%</span>
+            <span>50%</span>
+            <span>0%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtro por jogadora -->
+      <div class="campo-busca">
+        <ion-icon name="search-outline"></ion-icon>
+        <ion-input
+          placeholder="Filtrar por nome..."
+          [(ngModel)]="termoBusca"
+          (ionInput)="aplicarFiltro()"
+          class="entrada-busca"
+        ></ion-input>
+        <button class="limpar-busca" *ngIf="termoBusca" (click)="limparBusca()">
+          <ion-icon name="close-circle"></ion-icon>
+        </button>
+      </div>
+
+      <!-- Progresso por tema -->
+      <h3 class="titulo-seccao" *ngIf="progresso.length > 0">
+        <ion-icon name="trending-up-outline"></ion-icon>
+        Progresso por tema
+      </h3>
+
+      <div class="lista-progresso" *ngIf="progresso.length > 0">
+        <div class="item-progresso" *ngFor="let item of progresso; let i = index" [style.--ordem]="i">
+          <div class="cabecalho-item">
+            <span class="nome-tema">{{ nomeTema(item.temaId) }}</span>
+            <span class="percentagem">{{ item.melhorPercentagem }}%</span>
+          </div>
+          <div class="barra-fundo">
+            <div
+              class="barra-preenchida"
+              [style.width.%]="item.melhorPercentagem"
+              [style.background]="corTema(item.temaId)"
+            ></div>
+          </div>
+          <span class="tentativas">{{ item.tentativas }} tentativa(s)</span>
+        </div>
+      </div>
+
+      <!-- Histórico de tentativas (filtrado) -->
+      <h3 class="titulo-seccao">
+        <ion-icon name="time-outline"></ion-icon>
+        Histórico
+        <span class="contador-filtro" *ngIf="termoBusca">({{ historicoFiltrado.length }})</span>
+      </h3>
+
+      <p class="sem-resultados" *ngIf="historicoFiltrado.length === 0 && termoBusca">
+        Nenhum resultado encontrado para "{{ termoBusca }}".
+      </p>
+
+      <ion-card class="cartao-historico" *ngFor="let resultado of historicoFiltrado; let i = index" [style.--ordem]="i">
+        <ion-card-content>
+          <div class="linha-historico">
+            <div class="info-historico">
+              <strong>{{ resultado.nomeJogadora }}</strong>
+              <span class="detalhe-historico">
+                {{ resultado.pontuacao }}/{{ resultado.totalPerguntas }} ·
+                Ronda {{ resultado.ronda }} ·
+                {{ formatarData(resultado.data) }}
+              </span>
+              <span class="streak-historico" *ngIf="resultado.melhorStreak && resultado.melhorStreak > 1">
+                <ion-icon name="flame-outline"></ion-icon>
+                Streak: {{ resultado.melhorStreak }}
+              </span>
+            </div>
+            <span
+              class="badge-percentagem"
+              [class.passou]="resultado.percentagem >= 60"
+            >
+              {{ resultado.percentagem }}%
+            </span>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Botão de limpeza -->
+      <ion-button
+        expand="block"
+        fill="clear"
+        color="danger"
+        class="botao-limpar"
+        (click)="pedirLimpeza()"
+      >
+        <ion-icon name="trash-outline" slot="start"></ion-icon>
+        Limpar todo o histórico
+      </ion-button>
+
+    </ng-container>
+
+    <ion-alert
+      [isOpen]="mostrarAlertaLimpar"
+      header="Limpar histórico"
+      message="Esta ação remove todos os resultados e o progresso das rondas guardado. Não pode ser desfeita. Tens a certeza?"
+      [buttons]="alertaBotoes"
+      (didDismiss)="mostrarAlertaLimpar = false"
+    ></ion-alert>
+
+  </div>
+</ion-content>

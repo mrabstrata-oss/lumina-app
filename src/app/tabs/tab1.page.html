@@ -1,0 +1,117 @@
+<ion-header [translucent]="true" class="cabecalho-lumina">
+  <ion-toolbar>
+    <div class="marca" slot="start">
+      <app-logo [tamanho]="28"></app-logo>
+      <span class="nome-marca">Lumina</span>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="conteudo-aprender">
+
+  <!-- Partículas decorativas de fundo, sutis e não-interativas -->
+  <div class="particulas" aria-hidden="true">
+    <span class="particula p1"></span>
+    <span class="particula p2"></span>
+    <span class="particula p3"></span>
+    <span class="particula p4"></span>
+    <span class="particula p5"></span>
+    <span class="particula p6"></span>
+  </div>
+
+  <div class="ion-padding conteudo-interno">
+
+    <!-- Slogan reflexivo -->
+    <div class="hero">
+      <span class="etiqueta-hero">
+        <ion-icon name="sparkles-outline"></ion-icon>
+        Saúde da Mulher
+      </span>
+      <h1 class="slogan">O teu corpo fala.<br />Aprende a ouvir.</h1>
+      <p class="subtitulo-hero">
+        {{ temas.length }} temas para conheceres melhor cada fase da tua jornada.
+      </p>
+    </div>
+
+    <!-- Grid mosaico dos temas -->
+    <div class="mosaico">
+      <button
+        class="bloco-tema tamanho-{{ tema.tamanho }}"
+        *ngFor="let tema of temas; let i = index"
+        [style.--cor-tema]="tema.cor"
+        [style.--cor-clara]="tema.corClara"
+        [style.--ordem]="i"
+        (click)="abrirTema(tema)"
+      >
+        <div class="icone-bloco">
+          <ion-icon [name]="tema.icone"></ion-icon>
+        </div>
+        <div class="texto-bloco">
+          <h2>{{ tema.nome }}</h2>
+          <p *ngIf="tema.tamanho !== 'pequeno'">{{ tema.resumo }}</p>
+        </div>
+        <ion-icon name="arrow-forward-outline" class="seta-bloco"></ion-icon>
+      </button>
+    </div>
+
+    <!-- espaço para o FAB não cobrir o último bloco -->
+    <div class="espaco-fab"></div>
+
+  </div>
+
+  <!-- ===================== PAINEL LATERAL (detalhe do tema) ===================== -->
+  <div class="sobreposicao" *ngIf="painelAberto" (click)="fecharPainel()"></div>
+
+  <aside class="painel-lateral" [class.aberto]="painelAberto" *ngIf="temaSelecionado">
+    <div class="topo-painel" [style.--cor-tema]="temaSelecionado.cor">
+      <button class="botao-fechar" (click)="fecharPainel()">
+        <ion-icon name="close-outline"></ion-icon>
+      </button>
+
+      <div class="icone-topo">
+        <ion-icon [name]="temaSelecionado.icone"></ion-icon>
+      </div>
+
+      <h1>{{ temaSelecionado.nome }}</h1>
+      <p class="resumo-painel">{{ temaSelecionado.resumo }}</p>
+
+      <div class="metadados-painel">
+        <span>
+          <ion-icon name="time-outline"></ion-icon>
+          {{ temaSelecionado.tempoLeitura }} min de leitura
+        </span>
+        <span>
+          <ion-icon name="book-outline"></ion-icon>
+          {{ temaSelecionado.conteudo.length }} secções
+        </span>
+      </div>
+    </div>
+
+    <div class="corpo-painel">
+      <div
+        class="seccao-painel"
+        *ngFor="let seccao of temaSelecionado.conteudo; let i = index"
+        [style.--ordem]="i"
+      >
+        <div class="marcador-seccao" [style.background]="temaSelecionado.cor"></div>
+        <div>
+          <h3>{{ seccao.titulo }}</h3>
+          <p>{{ seccao.texto }}</p>
+        </div>
+      </div>
+
+      <button class="cta-painel-quiz" (click)="fecharPainel(); irParaQuiz()">
+        <ion-icon name="help-circle-outline"></ion-icon>
+        <span>Testar o que aprendi sobre este tema</span>
+        <ion-icon name="arrow-forward-outline" class="seta-cta"></ion-icon>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ===================== FAB INTELIGENTE PARA O QUIZ ===================== -->
+  <button class="fab-quiz" [class.persuasivo]="mostrarSugestaoQuiz" (click)="irParaQuiz()">
+    <ion-icon name="help-circle-outline"></ion-icon>
+    <span class="texto-fab" *ngIf="mostrarSugestaoQuiz">Já exploraste bastante. Vamos testar?</span>
+  </button>
+
+</ion-content>

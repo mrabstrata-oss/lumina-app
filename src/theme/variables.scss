@@ -1,0 +1,22 @@
+/* Variáveis de cor do Ionic, ajustadas à identidade visual Lumina */
+
+:root {
+  --ion-color-primary: #C2185B;
+  --ion-color-primary-rgb: 194, 24, 91;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #ab1550;
+  --ion-color-primary-tint: #c8306c;
+
+  --ion-color-secondary: #7B2D8E;
+  --ion-color-secondary-rgb: 123, 45, 142;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #6c277d;
+  --ion-color-secondary-tint: #88419a;
+
+  --ion-background-color: #FBF8FA;
+  --ion-text-color: #2B2530;
+
+  --ion-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}

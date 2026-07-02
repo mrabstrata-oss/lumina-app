@@ -1,0 +1,25 @@
+# Dependências
+/node_modules
+
+# Build
+/www
+/dist
+/.angular
+/out-tsc
+
+# Capacitor (se gerado)
+/android
+/ios
+
+# Testes
+/coverage
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+
+# Logs
+npm-debug.log
+*.log
