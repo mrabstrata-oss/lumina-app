@@ -3,6 +3,7 @@ name: Gerar APK
 on:
   push:
     branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -21,13 +22,14 @@ jobs:
       - name: Instalar Android SDK
         uses: android-actions/setup-android@v2
 
-      - name: Instalar Node.js 18
+      - name: Instalar Node.js 20
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20.x'
+          cache: 'npm'
 
-      - name: Instalar Ionic CLI
-        run: npm install -g @ionic/cli
+      - name: Instalar Ionic CLI e Capacitor CLI
+        run: npm install -g @ionic/cli @capacitor/cli
 
       - name: Instalar dependências do projeto
         run: npm install
@@ -36,13 +38,22 @@ jobs:
         run: ionic build --prod
 
       - name: Copiar assets para o Capacitor (Android)
-        run: npx cap copy android && npx cap sync android
+        run: npx cap copy android
+
+      - name: Sincronizar Capacitor
+        run: npx cap sync android
 
       - name: Dar permissão de execução ao Gradle
-        run: cd android && chmod +x ./gradlew && cd ..
+        run: |
+          cd android
+          chmod +x ./gradlew
+          cd ..
 
-      - name: Gerar APK
-        run: cd android && ./gradlew assembleDebug && cd ..
+      - name: Gerar APK Debug
+        run: |
+          cd android
+          ./gradlew assembleDebug
+          cd ..
 
       - name: Fazer upload do APK gerado
         uses: actions/upload-artifact@v4
