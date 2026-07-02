@@ -1,0 +1,52 @@
+name: Gerar APK
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Instalar Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Instalar Android SDK
+        uses: android-actions/setup-android@v2
+
+      - name: Instalar Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Instalar Ionic CLI
+        run: npm install -g @ionic/cli
+
+      - name: Instalar dependências do projeto
+        run: npm install
+
+      - name: Build do projeto Ionic (produção)
+        run: ionic build --prod
+
+      - name: Copiar assets para o Capacitor (Android)
+        run: npx cap copy android && npx cap sync android
+
+      - name: Dar permissão de execução ao Gradle
+        run: cd android && chmod +x ./gradlew && cd ..
+
+      - name: Gerar APK
+        run: cd android && ./gradlew assembleDebug && cd ..
+
+      - name: Fazer upload do APK gerado
+        uses: actions/upload-artifact@v4
+        with:
+          name: lumina-app
+          path: ./android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 3
