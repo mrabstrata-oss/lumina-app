@@ -22,10 +22,10 @@ jobs:
       - name: Instalar Android SDK
         uses: android-actions/setup-android@v2
 
-      - name: Instalar Node.js 20
+      - name: Instalar Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: '22.x'
           cache: 'npm'
 
       - name: Instalar Ionic CLI e Capacitor CLI
