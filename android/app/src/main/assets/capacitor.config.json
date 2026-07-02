@@ -1,0 +1,8 @@
+{
+	"appId": "com.lumina.saude",
+	"appName": "Lumina",
+	"webDir": "www",
+	"server": {
+		"androidScheme": "https"
+	}
+}
