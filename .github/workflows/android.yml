@@ -37,6 +37,15 @@ jobs:
       - name: Build do projeto Ionic (produção)
         run: ionic build --prod
 
+      - name: Verificar se a pasta android existe
+        run: |
+          if [ -d "android" ]; then
+            echo "✅ Pasta android encontrada!"
+          else
+            echo "❌ Pasta android NÃO encontrada!"
+            exit 1
+          fi
+
       - name: Copiar assets para o Capacitor (Android)
         run: npx cap copy android
 
