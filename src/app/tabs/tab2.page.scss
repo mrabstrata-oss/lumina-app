@@ -724,6 +724,74 @@ ion-progress-bar {
   }
 }
 
+// ---------- Estilos da Contagem Regressiva ----------
+.ecra-contagem {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  animation: surgir 0.5s ease both;
+}
+
+.circulo-contagem {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.numero-contagem {
+  font-size: 4.2rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #C2185B, #7B2D8E);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: pulsar-contagem 0.8s ease-in-out infinite;
+  z-index: 2;
+}
+
+.anillo-contagem {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 4px solid #f0e4ec;
+  border-top-color: #C2185B;
+  border-right-color: #7B2D8E;
+  animation: girar-contagem 1.2s linear infinite;
+  box-shadow: 0 0 40px rgba(194, 24, 91, 0.15);
+}
+
+.texto-contagem {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2B2530;
+  margin: 0 0 4px;
+  letter-spacing: 0.04em;
+}
+
+.subtitulo-contagem {
+  font-size: 0.85rem;
+  color: #9a8aa0;
+  margin: 0;
+}
+
+@keyframes pulsar-contagem {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.08); opacity: 0.8; }
+}
+
+@keyframes girar-contagem {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 // ---------- Animações ----------
 @keyframes surgir {
   from {
@@ -793,6 +861,7 @@ ion-progress-bar {
   .ecra-rondas,
   .ecra-curiosidade,
   .ecra-perdido,
+  .ecra-contagem,
   .icone-flutuante,
   .texto-pergunta,
   .opcao,

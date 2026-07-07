@@ -90,6 +90,16 @@
     </ion-button>
   </div>
 
+  <!-- ===================== ESTADO: CONTAGEM REGRESSIVA ===================== -->
+  <div class="ecra-contagem" *ngIf="estado === 'contagem'">
+    <div class="circulo-contagem">
+      <span class="numero-contagem">{{ contagemRegressiva }}</span>
+      <div class="anillo-contagem"></div>
+    </div>
+    <p class="texto-contagem">Prepara-te...</p>
+    <p class="subtitulo-contagem">Ronda {{ rondaAtual }} vai começar</p>
+  </div>
+
   <!-- ===================== ESTADO: A DECORRER ===================== -->
   <div class="ecra-quiz" *ngIf="estado === 'a-decorrer' && perguntaAtual">
 
