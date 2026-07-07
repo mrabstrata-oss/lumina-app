@@ -299,8 +299,6 @@ export class Tab2Page implements OnDestroy {
     this.opcaoSelecionada = indice;
     this.respondeu = true;
 
-    this.atualizarClassesOpcoes();
-
     const acertou = indice === this.perguntaAtual?.respostaCorreta;
     this.acertosPorPergunta[this.indiceAtual] = acertou;
 
