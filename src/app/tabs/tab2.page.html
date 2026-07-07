@@ -139,22 +139,31 @@
 
     <div class="opcoes" [attr.data-key]="indiceAtual">
       <button
-        class="opcao"
-        [ngClass]="{
-          'correta': respondeu && i === perguntaAtual?.respostaCorreta,
-          'errada': respondeu && i === opcaoSelecionada && i !== perguntaAtual?.respostaCorreta,
-          'desativada': respondeu && i !== perguntaAtual?.respostaCorreta && i !== opcaoSelecionada
-        }"
-        *ngFor="let opcao of perguntaAtual.opcoes; let i = index"
-        (click)="selecionarOpcao(i)"
-        [disabled]="respondeu"
-        [style.--ordem]="i"
-      >
-        <span class="alinea">{{ ['A', 'B', 'C', 'D'][i] }}</span>
-        <span class="texto-opcao">{{ opcao }}</span>
-        <ion-icon *ngIf="respondeu && i === perguntaAtual?.respostaCorreta" name="checkmark-circle"></ion-icon>
-        <ion-icon *ngIf="respondeu && i === opcaoSelecionada && i !== perguntaAtual?.respostaCorreta" name="close-circle"></ion-icon>
-      </button>
+  #opcaoBtn
+  class="opcao"
+  [ngClass]="{
+    'correta': respondeu && i === perguntaAtual?.respostaCorreta,
+    'errada': respondeu && i === opcaoSelecionada && i !== perguntaAtual?.respostaCorreta,
+    'desativada': respondeu && i !== perguntaAtual?.respostaCorreta && i !== opcaoSelecionada
+  }"
+  *ngFor="let opcao of perguntaAtual.opcoes; let i = index"
+  (click)="selecionarOpcao(i)"
+  [disabled]="respondeu"
+  [style.--ordem]="i"
+>
+  <span class="alinea">{{ ['A', 'B', 'C', 'D'][i] }}</span>
+  <span class="texto-opcao">{{ opcao }}</span>
+  <ion-icon
+    #iconElem
+    *ngIf="respondeu && i === perguntaAtual?.respostaCorreta"
+    name="checkmark-circle"
+  ></ion-icon>
+  <ion-icon
+    #iconElem
+    *ngIf="respondeu && i === opcaoSelecionada && i !== perguntaAtual?.respostaCorreta"
+    name="close-circle"
+  ></ion-icon>
+</button>
     </div>
 
     <p class="aviso-tempo" *ngIf="tempoEsgotado">
