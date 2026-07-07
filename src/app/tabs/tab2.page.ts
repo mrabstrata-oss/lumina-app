@@ -296,47 +296,13 @@ export class Tab2Page implements OnDestroy {
 
   selecionarOpcao(indice: number) {
     if (this.respondeu) return;
+
     this.pararTemporizador();
     this.opcaoSelecionada = indice;
     this.respondeu = true;
-
+    
  // ============================================================
-  // MANIPULAÇÃO DIRETA DO DOM (FUNCIONA NO ANDROID)
-  // ============================================================
-  const opcoes = document.querySelectorAll('.opcao');
-  const correta = this.perguntaAtual?.respostaCorreta;
-
-  opcoes.forEach((btn, i) => {
-    // Remove todas as classes
-    this.renderer.removeClass(btn, 'correta');
-    this.renderer.removeClass(btn, 'errada');
-    this.renderer.removeClass(btn, 'desativada');
-
-    if (i === correta) {
-      this.renderer.addClass(btn, 'correta');
-    } else if (i === indice && i !== correta) {
-      this.renderer.addClass(btn, 'errada');
-    } else {
-      this.renderer.addClass(btn, 'desativada');
-    }
-  });
-
-  // ============================================================
-  // ATUALIZA OS ÍCONES MANUALMENTE
-  // ============================================================
-  const icones = document.querySelectorAll('.opcao ion-icon');
-  icones.forEach((icon, i) => {
-    // Remove ícones antigos
-    this.renderer.setAttribute(icon, 'name', '');
-    if (i === correta) {
-      this.renderer.setAttribute(icon, 'name', 'checkmark-circle');
-    } else if (i === indice && i !== correta) {
-      this.renderer.setAttribute(icon, 'name', 'close-circle');
-    }
-  });
-
-  // ============================================================
-  // FORÇA A DETEÇÃO DE MUDANÇAS (PARA A EXPLICAÇÃO APARECER)
+  // FORÇA A ATUALIZAÇÃO DA VIEW
   // ============================================================
   this.cdr.detectChanges();
 

@@ -138,33 +138,30 @@
     <h2 class="texto-pergunta" [attr.data-key]="indiceAtual">{{ perguntaAtual.pergunta }}</h2>
 
     <div class="opcoes" [attr.data-key]="indiceAtual">
-      <button
-  #opcaoBtn
-  class="opcao"
-  [ngClass]="{
-    'correta': respondeu && i === perguntaAtual?.respostaCorreta,
-    'errada': respondeu && i === opcaoSelecionada && i !== perguntaAtual?.respostaCorreta,
-    'desativada': respondeu && i !== perguntaAtual?.respostaCorreta && i !== opcaoSelecionada
-  }"
-  *ngFor="let opcao of perguntaAtual.opcoes; let i = index"
-  (click)="selecionarOpcao(i)"
-  [disabled]="respondeu"
-  [style.--ordem]="i"
->
-  <span class="alinea">{{ ['A', 'B', 'C', 'D'][i] }}</span>
-  <span class="texto-opcao">{{ opcao }}</span>
-  <ion-icon
-    #iconElem
-    *ngIf="respondeu && i === perguntaAtual?.respostaCorreta"
-    name="checkmark-circle"
-  ></ion-icon>
-  <ion-icon
-    #iconElem
-    *ngIf="respondeu && i === opcaoSelecionada && i !== perguntaAtual?.respostaCorreta"
-    name="close-circle"
-  ></ion-icon>
-</button>
-    </div>
+  <button
+    class="opcao"
+    *ngFor="let opcao of perguntaAtual.opcoes; let i = index"
+    (click)="selecionarOpcao(i)"
+    [disabled]="respondeu"
+    [style.--ordem]="i"
+    [style.border-color]="respondeu ? (i === perguntaAtual?.respostaCorreta ? '#388E3C' : (i === opcaoSelecionada ? '#D32F2F' : '#f0e4ec')) : '#f0e4ec'"
+    [style.background]="respondeu ? (i === perguntaAtual?.respostaCorreta ? '#E8F5E9' : (i === opcaoSelecionada ? '#FFEBEE' : '#ffffff')) : '#ffffff'"
+    [style.color]="respondeu ? (i === perguntaAtual?.respostaCorreta ? '#2E7D32' : (i === opcaoSelecionada ? '#C62828' : '#3a3340')) : '#3a3340'"
+  >
+    <span class="alinea">{{ ['A', 'B', 'C', 'D'][i] }}</span>
+    <span class="texto-opcao">{{ opcao }}</span>
+    <ion-icon
+      *ngIf="respondeu && i === perguntaAtual?.respostaCorreta"
+      name="checkmark-circle"
+      style="color: #388E3C; font-size: 20px; margin-left: auto;"
+    ></ion-icon>
+    <ion-icon
+      *ngIf="respondeu && i === opcaoSelecionada && i !== perguntaAtual?.respostaCorreta"
+      name="close-circle"
+      style="color: #D32F2F; font-size: 20px; margin-left: auto;"
+    ></ion-icon>
+  </button>
+</div>
 
     <p class="aviso-tempo" *ngIf="tempoEsgotado">
       <ion-icon name="time-outline"></ion-icon>
