@@ -103,6 +103,11 @@ export class Tab2Page implements OnDestroy {
   contagemRegressiva: number = 5;
   private contadorId: ReturnType<typeof setInterval> | null = null;
 
+  // ============================================================
+  // NOVA PROPRIEDADE PARA AS CLASSES DAS OPÇÕES
+  // ============================================================
+  classesOpcoes: string[] = [];
+
   constructor(
     private armazenamento: ArmazenamentoService,
     private cdr: ChangeDetectorRef
@@ -144,7 +149,7 @@ export class Tab2Page implements OnDestroy {
     }
   }
 
-    private async determinarRondaAtual() {
+  private async determinarRondaAtual() {
     const historico = await this.armazenamento.obterHistorico();
 
     let rondaCalculada: 1 | 2 | 3 = 1;
@@ -194,6 +199,7 @@ export class Tab2Page implements OnDestroy {
     this.vidas = VIDAS_INICIAIS;
     this.pontos = 0;
     this.coracaoPerdidoIndice = null;
+    this.classesOpcoes = [];
 
     this.estado = 'contagem';
     this.contagemRegressiva = 5;
@@ -246,7 +252,7 @@ export class Tab2Page implements OnDestroy {
     if (this.respondeu) return;
     this.tempoEsgotado = true;
     this.respondeu = true;
-    this.cdr.detectChanges();
+    this.atualizarClassesOpcoes();
     setTimeout(() => {
       this.iniciarRondaAtual();
     }, 1600);
@@ -292,7 +298,8 @@ export class Tab2Page implements OnDestroy {
     this.pararTemporizador();
     this.opcaoSelecionada = indice;
     this.respondeu = true;
-    this.cdr.detectChanges();
+
+    this.atualizarClassesOpcoes();
 
     const acertou = indice === this.perguntaAtual?.respostaCorreta;
     this.acertosPorPergunta[this.indiceAtual] = acertou;
@@ -323,6 +330,21 @@ export class Tab2Page implements OnDestroy {
     }
   }
 
+  private atualizarClassesOpcoes() {
+    if (!this.respondeu || !this.perguntaAtual) {
+      this.classesOpcoes = this.perguntas[this.indiceAtual]?.opcoes.map(() => '') || [];
+      return;
+    }
+
+    const correta = this.perguntaAtual.respostaCorreta;
+    this.classesOpcoes = this.perguntaAtual.opcoes.map((_, i) => {
+      if (this.tempoEsgotado) return 'desativada';
+      if (i === correta) return 'correta';
+      if (i === this.opcaoSelecionada) return 'errada';
+      return 'desativada';
+    });
+  }
+
   classeOpcao(indice: number): string {
     if (!this.respondeu) return '';
     if (this.tempoEsgotado) return 'desativada';
@@ -343,6 +365,7 @@ export class Tab2Page implements OnDestroy {
       this.opcaoSelecionada = null;
       this.respondeu = false;
       this.tempoEsgotado = false;
+      this.classesOpcoes = [];
       this.estado = 'a-decorrer';
       this.iniciarTemporizador();
     } else {
